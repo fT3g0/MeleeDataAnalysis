@@ -7,6 +7,8 @@ def wavedash_waveland_counter(game):
     #wavedash/waveland animation is (43:LANDING_FALL_SPECIAL), after a jump (JUMP_F, JUMP_B: 25, 26)
     # or their aerial version (27,28)
     # or an air dodge (236:ESCAPE_AIR)
+    #we can't just use all LANDING_FALL_SPECIAL because of up-B landing lags etc...
+
     # if perfect, the 2nd previous frame is 24:KNEE_BEND (jump startup)
 
     # a waveland is detected if none of the previous 6 frames was KNEE_BEND
@@ -18,7 +20,8 @@ def wavedash_waveland_counter(game):
     for i in range(len(game.frames)-6):
         for j in [0,1]:
             #condition for wavedash/land
-            if ((game.frames[i+6].ports[j].leader.pre.state == 43) and (game.frames[i+5].ports[j].leader.pre.state != 43)):
+            if ((game.frames[i+6].ports[j].leader.pre.state == 43) and
+                    (game.frames[i+5].ports[j].leader.pre.state in (25, 26, 27, 28, 236))):
                 #condition for perfect wavedash: 2nd-previous frame is 24:KNEE_BEND
                 if (game.frames[i+4].ports[j].leader.pre.state == 24):
                     number_of_wavedashs[j]+=1
